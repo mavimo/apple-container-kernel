@@ -1,0 +1,49 @@
+name: kernel-build
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    env:
+      KSOURCE: https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.14.9.tar.xz
+      KIMAGE: kernel-build:0.1
+
+    runs-on: ubuntu-24.04-arm
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          submodules: recursive
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build the kernel builder Docker image
+        run: |
+          cd apple-containerization/kernel/
+          docker build --platform linux/arm64 image/ -f image/Dockerfile -t ${KIMAGE}
+
+      - name: Download kernel sources
+        run: |
+          cd apple-containerization/kernel/
+          curl -SsL -o source.tar.xz ${KSOURCE}
+
+      - name: Run kernel build
+        run: |
+          cd apple-containerization/kernel/
+          docker run \
+            --platform linux/arm64 \
+            --volume .:/kernel \
+            --workdir /kernel \
+            ${KIMAGE} \
+            /bin/bash -c "./build.sh"
