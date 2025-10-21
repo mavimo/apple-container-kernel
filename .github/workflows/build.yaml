@@ -28,6 +28,11 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
+      - name: Apply patches
+        run: |
+          git apply --directory apple-containerization patches/0001-kernel-config.patch
+          git apply --directory apple-containerization patches/0002-build-image.patch
+
       - name: Build the kernel builder Docker image
         run: |
           cd apple-containerization/kernel/
