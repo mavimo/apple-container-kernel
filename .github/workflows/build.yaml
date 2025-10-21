@@ -11,6 +11,10 @@ on:
 permissions:
   pull-requests: write
 
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     env:
@@ -71,5 +75,5 @@ jobs:
             ## :package: Kernel Build Complete :package:
             The kernel has been successfully built! You can download the kernel image from the [Artifacts](../actions) section of this pull request.
 
-            **Kernel Version:** `${KVERSION}`
+            **Kernel Version:** `${{ env.KVERSION }}`
             **Build Status:** ✅ Successful
