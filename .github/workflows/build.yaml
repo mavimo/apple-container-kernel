@@ -8,10 +8,13 @@ on:
     branches:
       - main
 
+permissions:
+  pull-requests: write
+
 jobs:
   build:
     env:
-      KSOURCE: https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.14.9.tar.xz
+      KVERSION: 6.14.9
       KIMAGE: kernel-build:0.1
 
     runs-on: ubuntu-24.04-arm
@@ -41,7 +44,7 @@ jobs:
       - name: Download kernel sources
         run: |
           cd apple-containerization/kernel/
-          curl -SsL -o source.tar.xz ${KSOURCE}
+          curl -SsL -o source.tar.xz https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-${KVERSION}.tar.xz
 
       - name: Run kernel build
         run: |
@@ -52,3 +55,21 @@ jobs:
             --workdir /kernel \
             ${KIMAGE} \
             /bin/bash -c "./build.sh"
+
+      - name: Upload kernel build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          retention-days: 30
+          name: kernel
+          path: apple-containerization/kernel/vmlinux
+          if-no-files-found: error
+
+      - name: Add comment with kernel build info
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          message: |
+            ## :package: Kernel Build Complete :package:
+            The kernel has been successfully built! You can download the kernel image from the [Artifacts](../actions) section of this pull request.
+
+            **Kernel Version:** `${KVERSION}`
+            **Build Status:** ✅ Successful
