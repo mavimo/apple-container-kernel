@@ -1,0 +1,27 @@
+---
+name: Update kernel version 
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Run once a day
+    - cron: "30 0 * * *"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  updatecli:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Install Updatecli in the runner
+        uses: updatecli/updatecli-action@v2.94.0
+
+      - name: Update Kernel Version
+        run: updatecli apply --config .github/.updatecli.d/update-kernel.yaml
+        env:
+          UPDATECLI_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
