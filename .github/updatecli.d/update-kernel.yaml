@@ -6,13 +6,25 @@ scms:
   github:
     kind: github
     spec:
-      branch: '{{ .scm.branch }}'
-      email: '{{ .scm.email }}'
-      owner: '{{ .scm.owner }}'
-      repository: '{{ .scm.repository }}'
+      branch: {{ .github.branch }}
+      email: {{ .github.email }}
+      owner: {{ .github.owner }}
+      repository: {{ .github.repository }}
       token: '{{ requiredEnv "GITHUB_TOKEN" }}'
-      user: '{{ .scm.user }}'
-      username: '{{ requiredEnv "GITHUB_ACTOR" }}'
+      user: {{ .github.user }}
+      username: {{ .github.username }}
+
+actions:
+  pr:
+    kind: github/pullrequest
+    scmid: github
+    spec:
+      title: "Update Kernel Version"
+      # automerge: true
+      draft: false
+      labels:
+        - "dependencies"
+        - "kernel"
 
 sources:
   kernelVersion:
@@ -25,9 +37,8 @@ sources:
 targets:
   bumpKernelVersion:
     name: Update pipeline to the latest Kernel version
-    kind: yaml
+    kind: file
     scmid: github
     spec:
-      file: .github/workflows/build.yaml
-      key: $.jobs.build.env.KVERSION
-      value: '{{ source "kernelVersion" }}'
+      file: kernel
+      content: '{{ source "kernelVersion" }}'
