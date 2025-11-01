@@ -22,6 +22,6 @@ jobs:
         uses: updatecli/updatecli-action@v2.94.0
 
       - name: Update Kernel Version
-        run: updatecli apply --config .github/.updatecli.d/update-kernel.yaml
+        run: updatecli apply --config .github/updatecli.d/update-kernel.yaml --values .github/updatecli.d/values.yaml
         env:
-          UPDATECLI_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
