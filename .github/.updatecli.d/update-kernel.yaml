@@ -1,0 +1,33 @@
+## updatecli.yaml
+name: Update Kernel Version
+description: Update the Kernel version used in the build workflow to the latest stable release.
+
+scms:
+  github:
+    kind: github
+    spec:
+      branch: '{{ .scm.branch }}'
+      email: '{{ .scm.email }}'
+      owner: '{{ .scm.owner }}'
+      repository: '{{ .scm.repository }}'
+      token: '{{ requiredEnv "GITHUB_TOKEN" }}'
+      user: '{{ .scm.user }}'
+      username: '{{ requiredEnv "GITHUB_ACTOR" }}'
+
+sources:
+  kernelVersion:
+    name: Get the latest Kernel version
+    kind: shell
+    spec:
+      command: |
+        curl -s https://cdn.kernel.org/pub/linux/kernel/v6.x/ | grep href | grep linux | grep tar.gz | awk -F'"' '{ print $2 }' | sed 's/linux-//' | sed 's/.tar.gz//' | sort --version-sort | tail -n 1
+
+targets:
+  bumpKernelVersion:
+    name: Update pipeline to the latest Kernel version
+    kind: yaml
+    scmid: github
+    spec:
+      file: .github/workflows/build.yaml
+      key: $.jobs.build.env.KVERSION
+      value: '{{ source "kernelVersion" }}'
