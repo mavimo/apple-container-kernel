@@ -67,7 +67,7 @@ jobs:
             /bin/bash -c "./build.sh"
 
       - name: Upload kernel build artifacts
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           retention-days: 30
           name: kernel
