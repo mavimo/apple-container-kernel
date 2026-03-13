@@ -75,7 +75,7 @@ jobs:
           if-no-files-found: error
 
       - name: Add comment with kernel build info
-        uses: marocchino/sticky-pull-request-comment@v2
+        uses: marocchino/sticky-pull-request-comment@v3
         with:
           message: |
             ## :package: Kernel Build Complete :package:
