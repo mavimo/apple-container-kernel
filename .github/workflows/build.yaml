@@ -71,7 +71,7 @@ jobs:
         with:
           retention-days: 30
           name: kernel
-          path: apple-containerization/kernel/vmlinux
+          path: apple-containerization/kernel/vmlinux-arm64
           if-no-files-found: error
 
       - name: Add comment with kernel build info

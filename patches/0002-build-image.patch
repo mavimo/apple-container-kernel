@@ -1,11 +1,11 @@
 diff --git a/kernel/image/Dockerfile b/kernel/image/Dockerfile
-index 654ee97..58a7026 100644
+index 99a9857..3e0adf1 100644
 --- a/kernel/image/Dockerfile
 +++ b/kernel/image/Dockerfile
-@@ -5,6 +5,7 @@ RUN apt-get update && apt-get install -y \
-     bc \
+@@ -6,6 +6,7 @@ RUN apt-get update && apt-get install -y \
      binutils-multiarch \
      binutils-aarch64-linux-gnu \
+     binutils-x86-64-linux-gnu \
 +    dwarves \
      bison \
      flex \
