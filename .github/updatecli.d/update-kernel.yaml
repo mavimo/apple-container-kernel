@@ -1,6 +1,6 @@
-## updatecli.yaml
-name: Update Kernel Version
-description: Update the Kernel version used in the build workflow to the latest stable release.
+## update-kernel.yaml
+name: Update Kernel {{ .kernel.series }} Version
+description: Update the {{ .kernel.series }} kernel version used in the build workflow to the latest stable {{ .kernel.series }} release.
 
 scms:
   github:
@@ -19,26 +19,27 @@ actions:
     kind: github/pullrequest
     scmid: github
     spec:
-      title: "Update Kernel Version"
+      title: "Update Kernel {{ .kernel.series }} Version"
       # automerge: true
       draft: false
       labels:
         - "dependencies"
         - "kernel"
+        - "kernel-{{ .kernel.series }}"
 
 sources:
   kernelVersion:
-    name: Get the latest Kernel version
+    name: Get the latest Kernel {{ .kernel.series }} version
     kind: shell
     spec:
       command: |
-        curl -s https://cdn.kernel.org/pub/linux/kernel/v6.x/ | grep href | grep linux | grep tar.gz | awk -F'"' '{ print $2 }' | sed 's/linux-//' | sed 's/.tar.gz//' | sort --version-sort | tail -n 1
+        curl -s https://cdn.kernel.org/pub/linux/kernel/v{{ .kernel.majorVersion }}.x/ | grep href | grep linux | grep tar.gz | awk -F'"' '{ print $2 }' | sed 's/linux-//' | sed 's/.tar.gz//' | sort --version-sort | tail -n 1
 
 targets:
   bumpKernelVersion:
-    name: Update pipeline to the latest Kernel version
+    name: Update pipeline to the latest Kernel {{ .kernel.series }} version
     kind: file
     scmid: github
     spec:
-      file: kernel
+      file: kernel-{{ .kernel.series }}
       content: '{{ source "kernelVersion" }}'

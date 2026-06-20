@@ -18,6 +18,14 @@ concurrency:
 
 jobs:
   build:
+    strategy:
+      matrix:
+        include:
+          - series: "6x"
+            version_file: "kernel-6x"
+          - series: "7x"
+            version_file: "kernel-7x"
+
     env:
       KIMAGE: kernel-build:0.1
 
@@ -32,7 +40,7 @@ jobs:
       - name: Read kernel version
         id: read_kernel
         run: |
-          KVERSION=$(cat kernel)
+          KVERSION=$(cat ${{ matrix.version_file }})
           echo "kernel_version=${KVERSION}" >> "$GITHUB_OUTPUT"
 
       - name: Set up QEMU
@@ -54,7 +62,8 @@ jobs:
       - name: Download kernel sources
         run: |
           cd apple-containerization/kernel/
-          curl -SsL -o source.tar.xz https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-${{ steps.read_kernel.outputs.kernel_version }}.tar.xz
+          KMAJOR=$(echo "${{ steps.read_kernel.outputs.kernel_version }}" | cut -d. -f1)
+          curl -SsL -o source.tar.xz https://cdn.kernel.org/pub/linux/kernel/v${KMAJOR}.x/linux-${{ steps.read_kernel.outputs.kernel_version }}.tar.xz
 
       - name: Run kernel build
         run: |
@@ -70,16 +79,18 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           retention-days: 30
-          name: kernel
+          name: kernel-${{ matrix.series }}
           path: apple-containerization/kernel/vmlinux-arm64
           if-no-files-found: error
 
       - name: Add comment with kernel build info
         uses: marocchino/sticky-pull-request-comment@v3
         with:
+          header: kernel-${{ matrix.series }}
           message: |
-            ## :package: Kernel Build Complete :package:
+            ## :package: Kernel ${{ matrix.series }} Build Complete :package:
             The kernel has been successfully built! You can download the kernel image from the [Artifacts](../actions) section of this pull request.
 
+            **Kernel Series:** `${{ matrix.series }}`
             **Kernel Version:** `${{ steps.read_kernel.outputs.kernel_version }}`
             **Build Status:** ✅ Successful

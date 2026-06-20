@@ -21,7 +21,12 @@ jobs:
       - name: Install Updatecli in the runner
         uses: updatecli/updatecli-action@v3.3.0
 
-      - name: Update Kernel Version
-        run: updatecli apply --config .github/updatecli.d/update-kernel.yaml --values .github/updatecli.d/values.yaml
+      - name: Update Kernel 6.x Version
+        run: updatecli apply --config .github/updatecli.d/update-kernel.yaml --values .github/updatecli.d/values.yaml --values .github/updatecli.d/values-6x.yaml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update Kernel 7.x Version
+        run: updatecli apply --config .github/updatecli.d/update-kernel.yaml --values .github/updatecli.d/values.yaml --values .github/updatecli.d/values-7x.yaml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
