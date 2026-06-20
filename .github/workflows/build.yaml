@@ -54,7 +54,8 @@ jobs:
       - name: Download kernel sources
         run: |
           cd apple-containerization/kernel/
-          curl -SsL -o source.tar.xz https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-${{ steps.read_kernel.outputs.kernel_version }}.tar.xz
+          KMAJOR=$(echo "${{ steps.read_kernel.outputs.kernel_version }}" | cut -d. -f1)
+          curl -SsL -o source.tar.xz https://cdn.kernel.org/pub/linux/kernel/v${KMAJOR}.x/linux-${{ steps.read_kernel.outputs.kernel_version }}.tar.xz
 
       - name: Run kernel build
         run: |
