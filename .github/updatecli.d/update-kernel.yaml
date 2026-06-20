@@ -32,7 +32,7 @@ sources:
     kind: shell
     spec:
       command: |
-        curl -s https://cdn.kernel.org/pub/linux/kernel/v6.x/ | grep href | grep linux | grep tar.gz | awk -F'"' '{ print $2 }' | sed 's/linux-//' | sed 's/.tar.gz//' | sort --version-sort | tail -n 1
+        curl -s https://cdn.kernel.org/pub/linux/kernel/v7.x/ | grep href | grep linux | grep tar.gz | awk -F'"' '{ print $2 }' | sed 's/linux-//' | sed 's/.tar.gz//' | sort --version-sort | tail -n 1
 
 targets:
   bumpKernelVersion:
