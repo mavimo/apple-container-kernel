@@ -1,6 +1,6 @@
-## updatecli.yaml
-name: Update Kernel Version
-description: Update the Kernel version used in the build workflow to the latest stable release.
+## update-kernel-7x.yaml
+name: Update Kernel 7.x Version
+description: Update the 7.x kernel version used in the build workflow to the latest stable 7.x release.
 
 scms:
   github:
@@ -19,16 +19,17 @@ actions:
     kind: github/pullrequest
     scmid: github
     spec:
-      title: "Update Kernel Version"
+      title: "Update Kernel 7.x Version"
       # automerge: true
       draft: false
       labels:
         - "dependencies"
         - "kernel"
+        - "kernel-7x"
 
 sources:
   kernelVersion:
-    name: Get the latest Kernel version
+    name: Get the latest Kernel 7.x version
     kind: shell
     spec:
       command: |
@@ -36,9 +37,9 @@ sources:
 
 targets:
   bumpKernelVersion:
-    name: Update pipeline to the latest Kernel version
+    name: Update pipeline to the latest Kernel 7.x version
     kind: file
     scmid: github
     spec:
-      file: kernel
+      file: kernel-7x
       content: '{{ source "kernelVersion" }}'
