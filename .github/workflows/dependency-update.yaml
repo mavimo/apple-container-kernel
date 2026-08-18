@@ -19,7 +19,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Install Updatecli in the runner
-        uses: updatecli/updatecli-action@v3.4.0
+        uses: updatecli/updatecli-action@v3.6.0
 
       - name: Update Kernel 6.x Version
         run: updatecli apply --config .github/updatecli.d/update-kernel.yaml --values .github/updatecli.d/values.yaml --values .github/updatecli.d/values-6x.yaml
